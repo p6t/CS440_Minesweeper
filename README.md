@@ -4,6 +4,12 @@ Peter Tilton and Mayank Singamreddy
 
 Due 20 Mar 2021
 
+## Work distribution
+
+- Step 1: Environment and agent structure (Peter)
+- Step 2: Basic agent algorithm (Peter)
+- Step 3: Improved agent (Mayank)
+- Step 4: Writeup (Both)
 ## Bonus points
 
 - EXTRA CREDIT: 15 points for LaTeX
@@ -59,8 +65,6 @@ Procedure:
 
 ## Questions and writeup
 
-- Representation: How did you represent the board in your program, and how did you represent the information / knowledge that the clue cells reveal? How could you represent inferred relationships between cells.
-- Inference: When you collect a new clue, how do you model / process / compute the information you gain from it? In other words, how do you update your current state of knowledge based on that clue? Does your program deduce everything it can from a given clue before continuing? If so, how can you be sure of this, and if not, how could you consider improving it?
-- Decisions: Given a current state of the board, and a state of knowledge about the board, how does your program decide which cell to search next?
-- Performance: For a 
+Just read from the assignment doc, I don't wanna write it all here.
+
 
