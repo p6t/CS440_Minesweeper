@@ -48,3 +48,19 @@ Procedure:
 - Reapeat above steps until no more hidden cells can be conclusively identified.
 - If no hidden cells can be conclusively identified, pick one randomly.
 
+## An improved agent
+
+- We should make an improved agent which uses methods of inference and proof to combine clues.
+- Knowledge includes:
+    - Whether or not a cell has been revealed.
+    - Whether or not a revealed cell is a mine or safe.
+    - Clue number revealed for a safe cell.
+    - Inferred relationships between cells.
+
+## Questions and writeup
+
+- Representation: How did you represent the board in your program, and how did you represent the information / knowledge that the clue cells reveal? How could you represent inferred relationships between cells.
+- Inference: When you collect a new clue, how do you model / process / compute the information you gain from it? In other words, how do you update your current state of knowledge based on that clue? Does your program deduce everything it can from a given clue before continuing? If so, how can you be sure of this, and if not, how could you consider improving it?
+- Decisions: Given a current state of the board, and a state of knowledge about the board, how does your program decide which cell to search next?
+- Performance: For a 
+
