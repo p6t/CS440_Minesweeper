@@ -122,8 +122,8 @@ if SINGLE_RUN_TEST_ENABLED:
 
 PLOT_1_ENABLED = 1
 if PLOT_1_ENABLED:
-    test_d = 5
-    reps = 100
+    test_d = 10
+    reps = 10
 
     scores = [0] * (test_d ** 2)
     for test_n in range(1, test_d ** 2):

@@ -37,7 +37,7 @@ class BasicAgent:
             for index, val in np.ndenumerate(self.clues):
                 if (val == i):
                     (x, y) = index
-                    possible_nexts.extend(self.get_neighbors(x, y))
+                    possible_nexts.extend(self.get_unvisited_neighbors(x, y))
             if len(possible_nexts) > 0:
                 (x, y) = random.choice(possible_nexts)
                 return (x, y)
@@ -56,6 +56,20 @@ class BasicAgent:
                 if (i == x) and (j == y):
                     continue
                 neighbors.append((i, j))
+        return neighbors
+
+    def get_unvisited_neighbors(self, x, y):
+        neighbors = []
+        for i in range(x - 1, x + 2):
+            if (i < 0) or (i >= self.revealed.shape[0]):
+                continue
+            for j in range(y - 1, y + 2):
+                if (j < 0) or (j >= self.revealed.shape[1]):
+                    continue
+                if (i == x) and (j == y):
+                    continue
+                if self.revealed[i][j] == 0:
+                    neighbors.append((i, j))
         return neighbors
 
     def update_kb(self, x, y, clue):
