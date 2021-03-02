@@ -1,7 +1,8 @@
 import numpy as np
+import matplotlib.pyplot as plt
 import basic_agent
 
-DEBUG = 1
+DEBUG = 0
 
 """
 Generate new board
@@ -101,12 +102,53 @@ def calculate_score(board, agent):
 START TESTING
 """
 
-test_d = 10
-test_n = 10
-reps = 100
-scores = [0] * reps
-for i in range(reps):
+SINGLE_RUN_TEST_ENABLED = 0
+if SINGLE_RUN_TEST_ENABLED:
+    test_d = 5
+    test_n = 5
     test_board = generate_board(test_d, test_n)
     test_agent = basic_agent.BasicAgent(test_d, test_n)
-    scores[i] = play_minesweeper(test_board, test_agent)
-print(scores)
+    score = play_minesweeper(test_board, test_agent)
+    print("AGENT REVEALED:")
+    print(test_agent.revealed)
+    print("AGENT CLUES:")
+    print(test_agent.clues)
+    print("AGENT FLAGGED:")
+    print(test_agent.flagged)
+    print("ACTUAL BOARD:")
+    print(test_board)
+    print("SCORE: {}".format(score))
+
+
+PLOT_1_ENABLED = 1
+if PLOT_1_ENABLED:
+    test_d = 5
+    reps = 100
+
+    scores = [0] * (test_d ** 2)
+    for test_n in range(1, test_d ** 2):
+        print("TESTING WITH {} MINES".format(test_n))
+        test_set = [0] * reps
+        for i in range(reps):
+            test_board = generate_board(test_d, test_n)
+            test_agent = basic_agent.BasicAgent(test_d, test_n)
+            test_set[i] = play_minesweeper(test_board, test_agent)
+        scores[test_n] = sum(test_set) / len(test_set)
+    
+    ABSOLUTE = 1
+    if ABSOLUTE:
+        print(scores)
+        xvals = np.arange(len(scores))
+        plt.plot(xvals, scores)
+        plt.show()
+
+    RELATIVE = 0
+    if RELATIVE:
+        xvals = np.arange(len(scores))
+        instant_fail_chance = np.zeros(len(scores))
+        for i in range(len(xvals)):
+            instant_fail_chance[i] = 1 - (i / len(scores))
+        relative_scores = scores / xvals / instant_fail_chance
+        print(relative_scores)
+        plt.plot(xvals, relative_scores)
+        plt.show()
