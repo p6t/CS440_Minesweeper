@@ -65,14 +65,28 @@ class AdvancedAgent:
         # terms that can be checked for contradiction
 
 
+
         #PROBABLY CALLED SOMEWHERE ELSE, LIKE THE MAIN
-        self.santaclause()        
+        self.santaclause(bluesclues)        
 
 
-    def santaclause(bluesclues,x,y):
+    def santaclause(bluesclues):
         value = bluesclues.values()
-        for value in a_dict.values():
-            print(value)
+        for value in bluesclues.values():
+            if(value[1])
 
-    
-    
+        
+        '''
+        TO FIND A CONTRADICTION:
+        1. Must have a sequence of values to choose for assignment, which allow for an eventual contradiction
+        2. These values will either contradict or not contradict each other. 
+        (question): 3 versions of a clause exist, and 2 of them are allowed, is it necessary to track
+        3. track the email response for if subsequent contradiction applies to assignment
+        '''
+
+        '''
+        santaclause will take bluesclues which will include a variety of clues that all include [count,vars]
+        take commons lowest counts, keep assigning until a contradiction
+        question: do you have to assign to satisfy an entire clause at once
+
+        '''
