@@ -24,148 +24,64 @@ class BasicAgent:
         1: Flagged as mine
     mines_total: same as n in parameters
     """
-    def __init__(self, d, n):
-        self.revealed = np.zeros((d, d))
+    def __init__(self, d, n): 
+
+        self.dimension = d
+        self.total_mines = n
+
+        # Whether or not cell is mine or safe
+        # 0 for unknown
+        # 1 for mine
+        # 2 for safe
+        self.mine_or_safe = np.zeros((d, d))
+
+        # If safe, number of mines surrounding it
+        # -1 for unknown
+        # 0-8 for mines
         self.clues = np.full((d, d), -1)
-        self.flagged = np.zeros((d, d))
-        self.mines_total = n
-        self.mines_identified = 0
+
+        # Number of safe squares adjacent
+        self.adj_safe = np.zeros((d, d))
+
+        # Number of mines adjacent
+        self.adj_mine = np.zeros((d, d))
+
+        # Number of hidden squares adjacent
+        self.adj_hidden = np.zeros((d, d))
+
+        for i in range(d):
+            for j in range(d):
+                if (i == 0 or i == d - 1) and (j == 0 or j == d - 1):
+                    self.adj_hidden[i][j] = 3
+                elif (i == 0 or i == d - 1) or (j == 0 or j == d - 1):
+                    self.adj_hidden[i][j] = 5
+                else:
+                    self.adj_hidden = 8
 
     def query_next(self):
-        possible_nexts = []
-        for i in range(9):
-            for index, val in np.ndenumerate(self.clues):
-                if (val == i):
-                    (x, y) = index
-                    possible_nexts.extend(self.get_unvisited_neighbors(x, y))
-            if len(possible_nexts) > 0:
-                (x, y) = random.choice(possible_nexts)
-                return (x, y)
-        x = random.randrange(0, len(self.clues))
-        y = random.randrange(0, len(self.clues))
-        return (x, y)
-
-    def get_neighbors(self, x, y):
-        neighbors = []
-        for i in range(x - 1, x + 2):
-            if (i < 0) or (i >= self.revealed.shape[0]):
-                continue
-            for j in range(y - 1, y + 2):
-                if (j < 0) or (j >= self.revealed.shape[1]):
-                    continue
-                if (i == x) and (j == y):
-                    continue
-                neighbors.append((i, j))
-        return neighbors
-
-    def get_unvisited_neighbors(self, x, y):
-        neighbors = []
-        for i in range(x - 1, x + 2):
-            if (i < 0) or (i >= self.revealed.shape[0]):
-                continue
-            for j in range(y - 1, y + 2):
-                if (j < 0) or (j >= self.revealed.shape[1]):
-                    continue
-                if (i == x) and (j == y):
-                    continue
-                if self.revealed[i][j] == 0:
-                    neighbors.append((i, j))
-        return neighbors
+        pass
 
     def update_kb(self, x, y, clue):
-        if DEBUG:
-            print("SAFE CELL, UPDATING KNOWLEDGE BASE")
-        self.revealed[x][y] = 1
-        self.clues[x][y] = clue
-        self.flag_new_mines()
+        continue_flag = 1
+        while continue_flag:
+            continue_flag = 0
+            for i in range(self.dimension):
+                for j in range(self.dimension):
+                    if (self.clues[i][j] - self.adj_mine[i][j] == self.adj_hidden[i][j]):
+                        # Every hidden neighbor is a mine
+                        self.mark_all_adj_mine(i, j)
+                        continue_flag = 1
+                    elif ((8 - self.clues[i][j]) - self.adj_safe[i][j] == self.adj_hidden[i][j]):
+                        # Every hidden neighbor is safe
+                        self.mark_all_adj_safe(i, j)
+                        continue_flag = 1               
+        return None
 
-    def flag_new_mines(self):
-        for index, val in np.ndenumerate(self.revealed):
-            x, y = index
-            if self.revealed[x][y] == 0:
-                continue
-            for i in range(x - 1, x + 2):
-                if (i < 0) or (i >= self.flagged.shape[0]):
-                    continue
-                for j in range(y - 1, y + 2):
-                    if (j < 0) or (j >= self.flagged.shape[1]):
-                        continue
-                    if (i == x) and (j == y):
-                        self.flagged[x][y] = -1
-                        continue
-                    if (self.clues[i][j]) == (self.get_adj_hidden(i, j)):
-                        self.set_all_adj_mine(i, j)
-                    if (self.mines_total - self.mines_identified) == self.get_adj_hidden(i, j): 
-                        self.set_all_adj_mine(i, j)
-                    if (8 - self.clues[i][j]) - self.get_adj_safe(i, j) == self.get_adj_hidden(i, j):
-                        self.set_all_adj_safe(i, j)
+    def mark_all_adj_mine(self, i, j):
+        pass
 
-    def get_adj_hidden(self, x, y):
-        adj_hidden = 0
-        for i in range(x - 1, x + 2):
-            if (i < 0) or (i >= self.revealed.shape[0]):
-                continue
-            for j in range(y - 1, y + 2):
-                if (j < 0) or (j >= self.revealed.shape[1]):
-                    continue
-                if (i == x) and (j == y):
-                    continue
-                if self.revealed[i][j] == 0:
-                    adj_hidden += 1
-        return adj_hidden
-
-    def get_adj_safe(self, x, y):
-        adj_safe = 0
-        for i in range(x - 1, x + 2):
-            if (i < 0) or (i >= self.flagged.shape[0]):
-                continue
-            for j in range(y - 1, y + 2):
-                if (j < 0) or (j >= self.flagged.shape[1]):
-                    continue
-                if (i == x) and (j == y):
-                    continue
-                if self.flagged[i][j] == -1:
-                    adj_safe += 1
-        return adj_safe
-
-    def get_adj_mine(self, x, y):
-        adj_mine = 0
-        for i in range(x - 1, x + 2):
-            if (i < 0) or (i >= self.flagged.shape[0]):
-                continue
-            for j in range(y - 1, y + 2):
-                if (j < 0) or (j >= self.flagged.shape[1]):
-                    continue
-                if (i == x) and (j == y):
-                    continue
-                if self.flagged[i][j] == 1:
-                    adj_mine += 1
-        return adj_mine
-
-    def set_all_adj_mine(self, x, y):
-        for i in range(x - 1, x + 2):
-            if (i < 0) or (i >= self.flagged.shape[0]):
-                continue
-            for j in range(y - 1, y + 2):
-                if (j < 0) or (j >= self.flagged.shape[1]):
-                    continue
-                if (i == x) and (j == y):
-                    continue
-                if (self.revealed[i][j] == 0):
-                    if DEBUG:
-                            print("FLAGGING MINE: x = {}, y = {}".format(i, j))
-                    self.flagged[i][j] = 1
-
-    def set_all_adj_safe(self, x, y):
-        for i in range(x - 1, x + 2):
-            if (i < 0) or (i >= self.flagged.shape[0]):
-                continue
-            for j in range(y - 1, y + 2):
-                if (j < 0) or (j >= self.flagged.shape[1]):
-                    continue
-                if (i == x) and (j == y):
-                    continue
-                self.flagged[i][j] = -1
+    def mark_all_adj_safe(self, i, j):
+        pass
 
 
                 

@@ -1,7 +1,27 @@
 class AdvancedAgent:
 
     def __init__(self, d, n):
-        pass
+        '''
+        clues dict: coordinate : number of surrounding mines 
+        clause - coordinate of clue : set of clauses attached
+        clues array, track what exists
+        hidden array, track the unknown 
+        '''
+
+        #ARBITRARY, FIX
+        self.dimension = d
+
+        #begin with hidden array
+        self.hidden = []
+        self.hidcount = 0
+        for i  in range(self.dimension):
+            for j in range(self.dimension):
+                self.hidden[self.hidcount] = ((i,j)) 
+            
+        #updating knowledge base per turn 
+        self.bluesclues = [] 
+        self.commons = {}
+
 
     # Returns (x,y) for next cell to query
     def query_next(self):
@@ -73,7 +93,7 @@ class AdvancedAgent:
     def santaclause(bluesclues):
         value = bluesclues.values()
         for value in bluesclues.values():
-            if(value[1])
+            if(value[1]):
 
         
         '''
@@ -90,3 +110,7 @@ class AdvancedAgent:
         question: do you have to assign to satisfy an entire clause at once
 
         '''
+
+# TESTING STARTS HERE
+
+my_advancedagent = AdvancedAgent(8, 10)

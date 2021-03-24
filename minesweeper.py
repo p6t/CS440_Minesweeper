@@ -102,53 +102,10 @@ def calculate_score(board, agent):
 START TESTING
 """
 
-SINGLE_RUN_TEST_ENABLED = 0
-if SINGLE_RUN_TEST_ENABLED:
-    test_d = 5
-    test_n = 5
-    test_board = generate_board(test_d, test_n)
-    test_agent = basic_agent.BasicAgent(test_d, test_n)
-    score = play_minesweeper(test_board, test_agent)
-    print("AGENT REVEALED:")
-    print(test_agent.revealed)
-    print("AGENT CLUES:")
-    print(test_agent.clues)
-    print("AGENT FLAGGED:")
-    print(test_agent.flagged)
-    print("ACTUAL BOARD:")
-    print(test_board)
-    print("SCORE: {}".format(score))
-
-
-PLOT_1_ENABLED = 1
-if PLOT_1_ENABLED:
-    test_d = 5
-    reps = 10
-
-    scores = [0] * (test_d ** 2)
-    for test_n in range(1, test_d ** 2):
-        print("TESTING WITH {} MINES".format(test_n))
-        test_set = [0] * reps
-        for i in range(reps):
-            test_board = generate_board(test_d, test_n)
-            test_agent = basic_agent.BasicAgent(test_d, test_n)
-            test_set[i] = play_minesweeper(test_board, test_agent)
-        scores[test_n] = sum(test_set) / len(test_set)
-    
-    ABSOLUTE = 1
-    if ABSOLUTE:
-        print(scores)
-        xvals = np.arange(len(scores))
-        plt.plot(xvals, scores)
-        plt.show()
-
-    RELATIVE = 0
-    if RELATIVE:
-        xvals = np.arange(len(scores))
-        instant_fail_chance = np.zeros(len(scores))
-        for i in range(len(xvals)):
-            instant_fail_chance[i] = 1 - (i / len(scores))
-        relative_scores = scores / xvals / instant_fail_chance
-        print(relative_scores)
-        plt.plot(xvals, relative_scores)
-        plt.show()
+board1 = generate_board(10, 30)
+print(board1)
+clue_board = board = np.zeros(10 ** 2).reshape(10, 10)
+for i in range(10):
+    for j in range(10):
+        clue_board[i][j] = get_clue(board1, i, j)
+print(clue_board)
