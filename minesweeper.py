@@ -5,6 +5,18 @@ import basic_agent
 DEBUG = 0
 
 """
+Agent requirements:
+
+Required fields:
+safely_flagged (int): The number of mines identified without running into them.
+
+Required functions:
+query_next() (returns (x, y)): Function to decide which square the agent wants to go to next.
+update_kb(x, y, clue): Function to update the kb with a clue at x, y. Note that clue=-999 if the user just hit a mine.
+
+"""
+
+"""
 Generate new board
 
 Parameters:
@@ -102,6 +114,7 @@ Return:
 score (int): The number of mines flagged successfully before the agent dies.
 """
 def calculate_score(board, agent):
+    """
     score = 0
     for index, val in np.ndenumerate(board):
         if val == 1:
@@ -109,6 +122,8 @@ def calculate_score(board, agent):
             if agent.mine_or_safe[x][y] == 1:
                 score += 1
     return score
+    """
+    return agent.safely_marked
 
 
 """
@@ -125,6 +140,8 @@ for i in range(num_tests):
     score = play_minesweeper(board1, agent1)
     scores[i] = score
 print(scores)
+actual_score = 0
+
 
 """
 testboard = np.zeros((4, 4))

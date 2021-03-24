@@ -8,6 +8,11 @@ class BasicAgent:
 
         self.dimension = d
         self.total_mines = n
+        self.safely_marked = 0
+
+        # if hidden
+        # 1 if revealed
+        self.revealed = np.zeros((d, d))
 
         # Whether or not cell is mine or safe
         # 0 for unknown
@@ -54,6 +59,8 @@ class BasicAgent:
             self.mine_or_safe[x][y] = 1
         else:
             self.clues[x][y] = clue
+            self.mine_or_safe[x][y] = 2
+            self.revealed[x][y] = 1
         #print(self.clues)
         
         continue_flag = 1
@@ -64,6 +71,7 @@ class BasicAgent:
                 for j in range(self.dimension):
                     #print("CLUE, LOCATION: {}, ({}, {})".format(self.clues[i][j], i, j))
                     #print("SAFE CLAUSE EVAL: {} of {}".format((8 - self.clues[i][j]) - self.adj_safe[i][j], self.adj_hidden[i][j]))
+                    #print("MINE CLAUSE EVAL: {} of {}".format(self.clues[i][j] - self.adj_mine[i][j], self.adj_hidden[i][j]))
                     if (self.clues[i][j] - self.adj_mine[i][j] == self.adj_hidden[i][j]):
                         # Every hidden neighbor is a mine
                         print("MARK ALL ADJACENT MINE")
@@ -74,11 +82,12 @@ class BasicAgent:
                     elif ((self.num_adj(i, j) - self.clues[i][j]) - self.adj_safe[i][j] == self.adj_hidden[i][j]):
                         #print("Uh oh")
                         # Every hidden neighbor is safe
-                        #print("MARK ALL ADJACENT SAFE")
+                        print("MARK ALL ADJACENT SAFE")
+                        if (self.mine_or_safe[i][j] != 2):
+                            continue_flag = 1 
                         self.mark_all_adj_safe(i, j)
                         self.update_adj_safe(i, j)
-                        self.update_adj_hidden(i, j)
-                        continue_flag = 1            
+                        self.update_adj_hidden(i, j)           
         return None
 
     def num_adj(self, i, j):
@@ -97,6 +106,7 @@ class BasicAgent:
                     continue
                 if (self.mine_or_safe[i][j] == 0):
                     self.mine_or_safe[i][j] == 1
+                    self.safely_marked += 1
         return None
 
     def mark_all_adj_safe(self, x, y):
@@ -118,7 +128,7 @@ class BasicAgent:
             for j in range(y-1, y+1):
                 if (j < 0 or j >= self.dimension):
                     continue
-                if (self.mine_or_safe[i][j] == 0):
+                if (self.revealed[i][j] == 0):
                     new_val += 1
         self.adj_hidden[x][y] = new_val
         return None
