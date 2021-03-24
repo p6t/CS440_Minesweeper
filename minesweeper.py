@@ -45,12 +45,13 @@ Return:
 score (int): The number of mines flagged successfully before the agent dies.
 """
 def play_minesweeper(board, agent):
-    for _ in range(board.size - agent.mines_total):
+    for _ in range(board.size - agent.total_mines):
         (x, y) = agent.query_next()
         if DEBUG:
             print("QUERY SELECTION: x = {}, y = {}, val = {}".format(x, y, board[x][y]))
         if board[x][y] == 1:
-            break
+            #print("HIT A MINE AT: x = {}, y = {}".format(x, y))
+            agent.update_kb(x, y, -999)
         agent.update_kb(x, y, get_clue(board, x, y))
     return calculate_score(board, agent)
 
@@ -93,7 +94,7 @@ def calculate_score(board, agent):
     for index, val in np.ndenumerate(board):
         if val == 1:
             (x, y) = index
-            if agent.flagged[x][y] == 1:
+            if agent.mine_or_safe[x][y] == 1:
                 score += 1
     return score
 
@@ -102,10 +103,24 @@ def calculate_score(board, agent):
 START TESTING
 """
 
-board1 = generate_board(10, 30)
-print(board1)
-clue_board = board = np.zeros(10 ** 2).reshape(10, 10)
-for i in range(10):
-    for j in range(10):
-        clue_board[i][j] = get_clue(board1, i, j)
-print(clue_board)
+dimension = 10
+n_mines = 30
+num_tests = 10
+scores = [0] * num_tests
+for i in range(num_tests):
+    board1 = generate_board(dimension, n_mines)
+    agent1 = basic_agent.BasicAgent(dimension, n_mines)
+    score = play_minesweeper(board1, agent1)
+    scores[i] = score
+print(scores)
+
+"""
+testboard = np.zeros((4, 4))
+testboard[0][0] = 1
+testboard[2][3] = 1
+print(testboard)
+
+testagent = basic_agent.BasicAgent(4, 2)
+score = play_minesweeper(testboard, testagent)
+print(score)
+"""

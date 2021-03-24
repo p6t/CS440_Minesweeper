@@ -94,6 +94,7 @@ class AdvancedAgent:
         value = bluesclues.values()
         for value in bluesclues.values():
             if(value[1]):
+                continue
 
         
         '''
