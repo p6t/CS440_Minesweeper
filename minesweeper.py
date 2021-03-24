@@ -120,7 +120,7 @@ START TESTING
 
 dimension = 10
 n_mines = 30
-num_tests = 10
+num_tests = 1
 scores = [0] * num_tests
 for i in range(num_tests):
     board1 = generate_board(dimension, n_mines)

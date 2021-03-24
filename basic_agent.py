@@ -10,7 +10,7 @@ class BasicAgent:
         self.total_mines = n
         self.safely_marked = 0
 
-        # if hidden
+        # 0 if hidden
         # 1 if revealed
         self.revealed = np.zeros((d, d))
 
@@ -49,7 +49,7 @@ class BasicAgent:
     def query_next(self):
         for i in range(self.dimension):
             for j in range(self.dimension):
-                if (self.mine_or_safe[i][j] == 2):
+                if (self.revealed[i][j] == 0) and (self.mine_or_safe[i][j] == 2):
                     return (i, j)
         return self.random_hidden_selection()
 
@@ -57,11 +57,12 @@ class BasicAgent:
         if(clue == -999):
             # Hit a mine
             self.mine_or_safe[x][y] = 1
+            self.revealed[x][y] = 1
         else:
             self.clues[x][y] = clue
             self.mine_or_safe[x][y] = 2
             self.revealed[x][y] = 1
-        #print(self.clues)
+        print(self.clues)
         
         continue_flag = 1
         while continue_flag:
@@ -104,7 +105,7 @@ class BasicAgent:
             for j in range(y-1, y+1):
                 if (j < 0 or j >= self.dimension):
                     continue
-                if (self.mine_or_safe[i][j] == 0):
+                if (self.revealed[i][j] == 0):
                     self.mine_or_safe[i][j] == 1
                     self.safely_marked += 1
         return None
@@ -116,7 +117,7 @@ class BasicAgent:
             for j in range(y-1, y+1):
                 if (j < 0 or j >= self.dimension):
                     continue
-                if (self.mine_or_safe[i][j] == 0):
+                if (self.revealed[i][j] == 0):
                     self.mine_or_safe[i][j] == 2
         return None
 
@@ -163,14 +164,14 @@ class BasicAgent:
         num_hidden = 0
         for i in range(self.dimension):
             for j in range(self.dimension):
-                if (self.mine_or_safe[i][j] == 0):
+                if (self.revealed[i][j] == 0):
                     num_hidden += 1
         selection_index = random.randint(0, num_hidden - 1)
         #print("SELECTION INDEX: {} of {}".format(selection_index, num_hidden))
         n = 0
         for i in range(self.dimension):
             for j in range(self.dimension):
-                if (self.mine_or_safe[i][j] == 0):
+                if (self.revealed[i][j] == 0):
                     if (n == selection_index):
                         return (i, j)
                     n += 1
