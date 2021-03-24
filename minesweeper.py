@@ -31,14 +31,20 @@ Errors:
 """   
 def generate_board(d, n):
     # Check inputs
-    if (d < 0) or (n < 1) or (n > d ** 2):
+    #if board dim is less than one (zero or below)
+    #if amount of mines is less than zero (any negative number)
+    if (d < 1) or (n < 0) or (n > d ** 2):
         return -1
     # 0 corresponds to empty space
+    #fill board with zero values for empty spaces
     board = np.zeros(d ** 2)
+    #add n bombs
     for i in range(int(n)):
         # 1 corresponds to a mine
         board[i] = 1
+    #shuffle the order of the bombs in the array
     np.random.shuffle(board)
+    #make the array a 2D array
     board = board.reshape((d, d))
     if DEBUG:
         print("START BOARD STARTING CONFIG")
@@ -57,14 +63,20 @@ Return:
 score (int): The number of mines flagged successfully before the agent dies.
 """
 def play_minesweeper(board, agent):
+    #for the amount of mines
     for _ in range(board.size - agent.total_mines):
+        #query next square to select to choose as a square to open up
+        #this means we don't believe that square is a mine
         (x, y) = agent.query_next()
         if DEBUG:
             print("QUERY SELECTION: x = {}, y = {}, val = {}".format(x, y, board[x][y]))
+        #if the square is a mine, we update our list of mine knowledge
         if board[x][y] == 1:
             #print("HIT A MINE AT: x = {}, y = {}".format(x, y))
             agent.update_kb(x, y, -999)
-        agent.update_kb(x, y, get_clue(board, x, y))
+        #if we are correct, and it is not a mine
+        #we will update the knowledge base to say how many mines are contained in this square
+        agent.update_kb(x, y, get_clue(board, x, y)) 
     return calculate_score(board, agent)
 
 """
