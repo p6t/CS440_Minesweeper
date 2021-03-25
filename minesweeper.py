@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import basic_agent
 
 def generate_board(d, n):
     # Check inputs
