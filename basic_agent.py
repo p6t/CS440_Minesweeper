@@ -62,13 +62,19 @@ class BasicAgent:
                     adj_any, adj_mine, adj_safe, adj_hidden = self.count_adjacent(i, j)
                     cur_clue = self.clues[i][j]
 
+                    # Nothing new to learn
+                    if (adj_hidden == 0):
+                        continue
+
                     # Check to see if all adjacent are mines
                     if (cur_clue - adj_mine == adj_hidden):
                         self.set_adjacent(i, j, "mine")
+                        do_another_loop = 1
 
                     # Check to see if all adjacent are safe
                     if ((adj_any - cur_clue) - adj_safe == adj_hidden):
                         self.set_adjacent(i, j, "safe")
+                        do_another_loop = 1
         
         return None
 
@@ -82,15 +88,16 @@ class BasicAgent:
                 continue
             for j in range(y - 1, y + 2):
                 if (j < 0) or (j >= self.d):
-                    adj_any += 1
-                    if (self.is_mine[i][j] == 1):
-                        adj_mine += 1
-                        # Mine safely identified add to score
-                        self.score += 1
-                    if (self.is_safe[i][j] == 1):
-                        adj_safe += 1
-                    if (self.revealed[i][j] == 0):
-                        adj_hidden += 1
+                    continue
+                if (i == x) and (j == y):
+                    continue
+                adj_any += 1
+                if (self.is_mine[i][j] == 1):
+                    adj_mine += 1
+                if (self.is_safe[i][j] == 1):
+                    adj_safe += 1
+                if (self.revealed[i][j] == 0):
+                    adj_hidden += 1
         return adj_any, adj_mine, adj_safe, adj_hidden
 
     def set_adjacent(self, x, y, mode):
@@ -99,9 +106,16 @@ class BasicAgent:
                 continue
             for j in range(y - 1, y + 2):
                 if (j < 0) or (j >= self.d):
-                    if (mode == "mine"):
+                    continue
+                if (i == x) and (j == y):
+                    continue
+                if (mode == "mine"):
+                    # Mine safely identified add to score
+                    if (self.is_safe[i][j] == 0) and (self.is_mine[i][j] == 0):
                         self.is_mine[i][j] = 1
-                    if (mode == "safe"):
+                        self.score += 1
+                if (mode == "safe"):
+                    if (self.is_mine[i][j] == 0):
                         self.is_safe[i][j] = 1
         return None
 
