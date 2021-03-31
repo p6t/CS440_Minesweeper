@@ -6,6 +6,7 @@ class BasicAgent:
         self.d = d
         self.n = n
         self.score = 0
+        
 
         self.revealed = np.zeros((d, d))
         self.is_mine = np.zeros((d, d))

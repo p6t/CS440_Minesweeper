@@ -19,13 +19,48 @@ class AdvancedAgent:
                 self.hidden[self.hidcount] = ((i,j)) 
             
         #updating knowledge base per turn 
-        self.bluesclues = [] 
-        self.commons = {}
+        self.bluesclues = {} 
+        self.commons = []
+        self.outOfCommons = []
+        self.tempassigns = {}
+        self.potentialwrong = {}
 
+    #example clue value: ((x,y) = [(x1,y1),(x2,y2)])
 
     # Returns (x,y) for next cell to query
     def query_next(self):
-        pass
+        
+
+    def decide_next(self):
+        #value to initially assign
+        allCondsSatisfied = False
+        x = 0
+        while(allCondsSatisfied==False):
+            self.tempassigns[self.commons[x]] = True
+            self.outOfCommons.append(self.commons.pop(x))
+            x+=1
+            for y in self.bluesclues:
+                checkVal = self.bluesclues[0] # the amount of bombs around it
+                tempArr = self.bluesclues[1] # the array of unopened square coords
+                trueCount = 0 #count the amount of assigns in this clause
+                for z in tempArr: 
+                    if(self.tempassigns.has_key(z)): #if this variable has been assigned
+                        if self.tempassigns[z] == True: 
+                            trueCount+=1 #one more true
+                #if contradiction formed
+                if trueCount > checkVal:
+                    #do something
+                    self.potentialwrong.extend(self.tempassigns)
+                    decide_next() # MUST INCLUDE THE VARATION
+
+                    # WORK ON THIS FIRST, MOST IMPORTANT
+                    #if there is a contradiction, the current list of temp assigns contains a contradiction
+                    #the next call of decide next must use potential wrong assignments to keep switching through first
+                    # good idea, sort through temp assigns for most appearances?? think about this, might be least 
+
+            if not self.commons:
+                allCondsSatisfied = True
+                    
 
     # Update KB given clue at given cell at (x,y)
     
@@ -84,17 +119,6 @@ class AdvancedAgent:
         #now that commons contains the most common terms that are mentioned, we have the most efficient
         # terms that can be checked for contradiction
 
-
-
-        #PROBABLY CALLED SOMEWHERE ELSE, LIKE THE MAIN
-        self.santaclause(bluesclues)        
-
-
-    def santaclause(bluesclues):
-        value = bluesclues.values()
-        for value in bluesclues.values():
-            if(value[1]):
-                continue
 
         
         '''
