@@ -29,7 +29,7 @@ class AdvancedAgent:
 
     # Returns (x,y) for next cell to query
     def query_next(self):
-        
+        pass
 
     def decide_next(self):
         #value to initially assign
@@ -104,10 +104,10 @@ class AdvancedAgent:
         #add new square to list of clues.
         self.clues[x][y] = clue
         #neighbors who the clue applies to
-        hiddenneighbors = get_unvisited_neighbors(self, x, y)
+        self.hiddenneighbors = self.get_unvisited_neighbors(self, x, y)
         #bluesclues is the dictionary of all clauses, with key being coordinate of clue
         # and values in bluesclues is a set of all the unvisited neighbors
-        bluesclues[(x,y)] = [clue,set(hiddenneighbors)]
+        self.bluesclues[(x,y)] = [clue,set(hiddenneighbors)]
         #for every set of coordinates in the hidden neighbors of this clue
         for (x,y) in hiddenneighbors:
             #add or increment it in the dictionary, which will store the amount of times it occurs
