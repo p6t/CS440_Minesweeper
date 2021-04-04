@@ -1,3 +1,5 @@
+import itertools
+
 class AdvancedAgent:
 
     def __init__(self, d, n):
@@ -9,7 +11,7 @@ class AdvancedAgent:
         '''
 
         #ARBITRARY, FIX
-        self.dimension = d
+        self.d = d
 
         #begin with hidden array
         self.hidden = []
@@ -19,48 +21,98 @@ class AdvancedAgent:
                 self.hidden[self.hidcount] = ((i,j)) 
             
         #updating knowledge base per turn 
-        self.bluesclues = {} 
+        self.bluesclues = {}
+        '''
         self.commons = []
         self.outOfCommons = []
         self.tempassigns = {}
         self.potentialwrong = {}
+        '''
 
-    #example clue value: ((x,y) = [(x1,y1),(x2,y2)])
 
     # Returns (x,y) for next cell to query
     def query_next(self):
-        pass
-
-    def decide_next(self):
         #value to initially assign
         allCondsSatisfied = False
-        x = 0
-        while(allCondsSatisfied==False):
-            self.tempassigns[self.commons[x]] = True
-            self.outOfCommons.append(self.commons.pop(x))
-            x+=1
-            for y in self.bluesclues:
-                checkVal = self.bluesclues[0] # the amount of bombs around it
-                tempArr = self.bluesclues[1] # the array of unopened square coords
-                trueCount = 0 #count the amount of assigns in this clause
-                for z in tempArr: 
-                    if(self.tempassigns.has_key(z)): #if this variable has been assigned
-                        if self.tempassigns[z] == True: 
-                            trueCount+=1 #one more true
-                #if contradiction formed
-                if trueCount > checkVal:
-                    #do something
-                    self.potentialwrong.extend(self.tempassigns)
-                    decide_next() # MUST INCLUDE THE VARATION
 
-                    # WORK ON THIS FIRST, MOST IMPORTANT
-                    #if there is a contradiction, the current list of temp assigns contains a contradiction
-                    #the next call of decide next must use potential wrong assignments to keep switching through first
-                    # good idea, sort through temp assigns for most appearances?? think about this, might be least 
+        # all vars List contains every coordinate of a hidden square, from a clause, in a list 
+        allVarsList = []
+        bluescluesItems = self.bluesclues.items()
+        for everyVar in bluescluesItems:
+            for everyCoord in everyVar[1]:
+                if everyCoord not in allVarsList:
+                    allVarsList.append(everyCoord)
+        
+        # all vars is a dictionary of all vars, to allow for easier access
+        # key = coordinate, value = an index to connect to it
 
-            if not self.commons:
-                allCondsSatisfied = True
-                    
+        allVars = {}
+        indexCounter = 0
+        for variable in allVarsList:
+            allVars[variable] = indexCounter
+            indexCounter+=1
+        
+        allPossibilities = [False, True]
+        [list(i) for i in itertools.product(allPossibilities, repeat=len(allVarsList))]
+        
+        for arrayOfPotentials in allPossibilities:
+            if not allCondsSatisfied:
+                for everyClause in bluescluesItems:
+                    #tempDict = {}
+                    maxBombs = everyClause[0]
+                    currentArr = everyClause[1]
+                    #passes = True
+                    trueCount = 0
+                    for x in currentArr:
+                        if arrayOfPotentials[allVars[x]] == True:
+                            trueCount+=1
+                    if trueCount is not maxBombs:
+                        allCondsSatisfied = True
+                        answer = arrayOfPotentials
+            else:
+                break
+            
+            # LAST LINE OF LOOPS
+        
+        if not allCondsSatisfied:
+            # RETURN FAKE ANSWER OR SOMETHING ASK PETER
+            return
+
+        else:
+            integerstore = 0
+            for x in answer:
+                if x == False:
+                    return allVarsList[integerstore]
+                else:
+                    integerstore +=1
+
+    
+
+    def count_adjacent(self, x, y):
+        adj_any = 0
+        adj_mine = 0
+        adj_safe = 0
+        adj_hidden = 0
+        for i in range(x - 1, x + 2):
+            if (i < 0) or (i >= self.d):
+                continue
+            for j in range(y - 1, y + 2):
+                if (j < 0) or (j >= self.d):
+                    continue
+                if (i == x) and (j == y):
+                    continue
+                adj_any += 1
+                if (self.is_mine[i][j] == 1):
+                    adj_mine += 1
+                if (self.is_safe[i][j] == 1):
+                    adj_safe += 1
+                if (self.revealed[i][j] == 0):
+                    adj_hidden += 1
+        return adj_any, adj_mine, adj_safe, adj_hidden
+
+        
+# CHECK IF ENOUGH ASSIGNS ARE POSSIBLE TO MAKE IT TRUE
+
 
     # Update KB given clue at given cell at (x,y)
     
