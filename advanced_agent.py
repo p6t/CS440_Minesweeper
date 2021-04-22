@@ -3,12 +3,6 @@ import itertools
 class AdvancedAgent:
 
     def __init__(self, d, n):
-        '''
-        clues dict: coordinate : number of surrounding mines 
-        clause - coordinate of clue : set of clauses attached
-        clues array, track what exists
-        hidden array, track the unknown 
-        '''
 
         #ARBITRARY, FIX
         self.d = d
@@ -18,16 +12,11 @@ class AdvancedAgent:
         self.hidcount = 0
         for i  in range(self.dimension):
             for j in range(self.dimension):
-                self.hidden[self.hidcount] = ((i,j)) 
-            
-        #updating knowledge base per turn 
+                self.hidden[self.hidcount] = ((i,j))
+
+        #updating knowledge base per turn
         self.bluesclues = {}
-        '''
-        self.commons = []
-        self.outOfCommons = []
-        self.tempassigns = {}
-        self.potentialwrong = {}
-        '''
+
 
 
     # Returns (x,y) for next cell to query
@@ -35,58 +24,55 @@ class AdvancedAgent:
         #value to initially assign
         allCondsSatisfied = False
 
-        # all vars List contains every coordinate of a hidden square, from a clause, in a list 
+        # all vars List contains every coordinate of a hidden square, from a clause, in a list
         allVarsList = []
         bluescluesItems = self.bluesclues.items()
         for everyVar in bluescluesItems:
             for everyCoord in everyVar[1]:
                 if everyCoord not in allVarsList:
                     allVarsList.append(everyCoord)
-        
-        # all vars is a dictionary of all vars, to allow for easier access
-        # key = coordinate, value = an index to connect to it
 
-        allVars = {}
-        indexCounter = 0
-        for variable in allVarsList:
-            allVars[variable] = indexCounter
-            indexCounter+=1
-        
+        # all vars is a list of all hidden, to allow for easier access
+
         allPossibilities = [False, True]
         [list(i) for i in itertools.product(allPossibilities, repeat=len(allVarsList))]
-        
-        for arrayOfPotentials in allPossibilities:
-            if not allCondsSatisfied:
-                for everyClause in bluescluesItems:
-                    #tempDict = {}
-                    maxBombs = everyClause[0]
-                    currentArr = everyClause[1]
-                    #passes = True
-                    trueCount = 0
-                    for x in currentArr:
-                        if arrayOfPotentials[allVars[x]] == True:
-                            trueCount+=1
-                    if trueCount is not maxBombs:
-                        allCondsSatisfied = True
-                        answer = arrayOfPotentials
-            else:
-                break
-            
-            # LAST LINE OF LOOPS
-        
-        if not allCondsSatisfied:
-            # RETURN FAKE ANSWER OR SOMETHING ASK PETER
-            return
 
+        indexCounter = 0
+        while indexCounter < len(allPossibilities) and not allCondsSatisfied:
+            currentList = allPossibilities[indexCounter]
+
+            for key in bluesclues:
+                clueHides = self.bluesclues[key]
+                if self.passConds(currentList,allVarsList,clueHides):
+                    answer = currentList
+                    allCondsSatisfied = True
+                    break
+
+            indexCounter+=1
+
+        #if you want, you can add risk analysis here
+        #otherwise, this is where you return any possible assignment from the
+        #inferred version answer
+
+        indexCounter = 0
+        while indexCounter<len(answer)
+            if answer[indexCounter] == True:
+                return allVarsList[indexCounter]
+            if indexCounter == (len(answer)-1) and answer[indexCounter] == False:
+                return -1
+
+    def passConds(self,assignments,hidden,clueHides):
+        tempList = []
+        counter = 0
+        for item in clueHides[1]:
+            #tempList append assignment at that index of hidden
+            if assignments[hidden.index(item)] == True:
+                counter +=1
+
+        if counter == clueHides[0]:
+            return True
         else:
-            integerstore = 0
-            for x in answer:
-                if x == False:
-                    return allVarsList[integerstore]
-                else:
-                    integerstore +=1
-
-    
+            return False
 
     def count_adjacent(self, x, y):
         adj_any = 0
@@ -110,26 +96,19 @@ class AdvancedAgent:
                     adj_hidden += 1
         return adj_any, adj_mine, adj_safe, adj_hidden
 
-        
-# CHECK IF ENOUGH ASSIGNS ARE POSSIBLE TO MAKE IT TRUE
+
+# CHECK IF ENOUGH ASSIGNS ARE POSSIBLE TO MAKE IT True
 
 
     # Update KB given clue at given cell at (x,y)
-    
+
     #COMMENTED FOR NOW, REWRITING
     #def update_kb(self, x, y, clue):
         #pass
 
 
-    #KB = 
-    '''
 
-    clues dict: coordinate : number of surrounding mines 
-    clause - coordinate of clue : set of clauses attached
-    clues array, track what exists
-    hidden array, track the unknown 
 
-    '''
     #ARBITRARY, FIX
     dimension = 8
 
@@ -138,16 +117,16 @@ class AdvancedAgent:
     hidcount = 0
     for i  in range(dimension):
         for j in range(dimension):
-            hidden[hidcount] = ((i,j)) 
-        
-    #updating knowledge base per turn 
-    bluesclues = [] 
+            hidden[hidcount] = ((i,j))
+
+    #updating knowledge base per turn
+    bluesclues = []
     commons = {}
 
     #update the kb to reflect a new clause based on the newly revelead square
     #this new additional clause can create potentially new conclusions
     #we can seek out contradictions efficiently by finding the least used variables (hidden squares)
-    #to find this, we need to include the commons dictionary, which will include each clue value as a key with 
+    #to find this, we need to include the commons dictionary, which will include each clue value as a key with
     # the number of other clues that include this coordinate in their clauses
 
     def update_kb(self, x, y, clue):
@@ -161,33 +140,23 @@ class AdvancedAgent:
         # and values in bluesclues is a set of all the unvisited neighbors
         self.bluesclues[(x,y)] = [clue,set(hiddenneighbors)]
         #for every set of coordinates in the hidden neighbors of this clue
-        for (x,y) in hiddenneighbors:
-            #add or increment it in the dictionary, which will store the amount of times it occurs
-            if((x,y)) in commons:
-                commons[(x,y)] +=1
-            else:
-                commons[(x,y)] = 1
-
-        #now that commons contains the most common terms that are mentioned, we have the most efficient
-        # terms that can be checked for contradiction
 
 
-        
-        '''
-        TO FIND A CONTRADICTION:
-        1. Must have a sequence of values to choose for assignment, which allow for an eventual contradiction
-        2. These values will either contradict or not contradict each other. 
-        (question): 3 versions of a clause exist, and 2 of them are allowed, is it necessary to track
-        3. track the email response for if subsequent contradiction applies to assignment
-        '''
-
-        '''
-        santaclause will take bluesclues which will include a variety of clues that all include [count,vars]
-        take commons lowest counts, keep assigning until a contradiction
-        question: do you have to assign to satisfy an entire clause at once
-
-        '''
 
 # TESTING STARTS HERE
+
+
+
+        #clues dict: coordinate : number of surrounding mines
+        #clause - coordinate of clue : set of clauses attached
+        #clues array, track what exists
+        #hidden array, track the unknown
+
+
+        #self.commons = []
+        #self.outOfCommons = []
+        #self.tempassigns = {}
+        #self.potentialwrong = {}
+
 
 my_advancedagent = AdvancedAgent(8, 10)
