@@ -31,15 +31,17 @@ def play_minesweeper(board, total_mines, agent):
     for _ in range(board.size - total_mines):
         #query next square to select to choose as a square to open up
         #this means we don't believe that square is a mine
-        (x, y) = agent.query_next()
-
+        (x,y) = agent.query_next()
+        print("x,y")
+        print((x,y))
         #if the square is a mine, we update our list of mine knowledge
         if board[x][y] == 1:
             #print("HIT A MINE AT: x = {}, y = {}".format(x, y))
             agent.update_kb(x, y, "mine")
         #if we are correct, and it is not a mine
         #we will update the knowledge base to say how many mines are contained in this square
-        agent.update_kb(x, y, get_clue(board, x, y)) 
+        agent.update_kb(x, y, get_clue(board, x, y))
+        print("not mine")
 
     return agent.get_score()
 

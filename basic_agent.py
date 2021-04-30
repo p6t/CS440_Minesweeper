@@ -2,11 +2,11 @@ import numpy as np
 import random
 
 class BasicAgent:
-    def __init__(self, d, n): 
+    def __init__(self, d, n):
         self.d = d
         self.n = n
         self.score = 0
-        
+
 
         self.revealed = np.zeros((d, d))
         self.is_mine = np.zeros((d, d))
@@ -17,7 +17,7 @@ class BasicAgent:
         self.n_hidden = d ** 2
 
     def query_next(self):
-        
+
         # Investigate next hidden square known to be safe
         for i in range(self.d):
             for j in range(self.d):
@@ -34,7 +34,7 @@ class BasicAgent:
                         return (i, j)
                     else:
                         counter += 1
-        
+
         # No safe options left
         return -1
 
@@ -76,7 +76,7 @@ class BasicAgent:
                     if ((adj_any - cur_clue) - adj_safe == adj_hidden):
                         self.set_adjacent(i, j, "safe")
                         do_another_loop = 1
-        
+
         return None
 
     def count_adjacent(self, x, y):
