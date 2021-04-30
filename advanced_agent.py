@@ -24,13 +24,13 @@ class AdvancedAgent:
 
         if self.firstmove == True:
             self.firstmove = False
-            return (0,0)
+            return ((1,1))
         #value to initially assign
         allCondsSatisfied = False
         # all vars List contains every coordinate of a hidden square, from a clause, in a list
 
         allVarsList = []
-        print("bluesclues")
+        print("bluesclues in query")
         print(self.bluesclues)
         bluescluesItems = self.bluesclues.values()
         print("blues clues items")
@@ -72,6 +72,44 @@ class AdvancedAgent:
             if answer[indexCounter] == False:
                 return allVarsList[indexCounter]
 
+    def update_kb(self, x, y, clue):
+        print("clue")
+        print(clue)
+        if (clue == "mine"):
+            # Hit a mine
+
+            for i in range(x - 1, x + 2):
+                if (i < 0) or (i >= self.d):
+                    continue
+                for j in range(y - 1, y + 2):
+                    if (j < 0) or (j >= self.d):
+                        continue
+                    if (i == x) and (j == y):
+                        continue
+
+                    if(((i,j)) in bluesclues[((i,j))][1]):
+                        if len(self.bluesclues[((i,j))][1]) == 0:
+                            del self.bluesclues[((i,j))]
+                        self.bluesclues[((i,j))][0]-=1
+
+        else:
+            self.is_mine[x][y] = 0
+            self.revealed[x][y] = 1
+            answerList = self.count_adjacent(x,y)
+            self.bluesclues[((x,y))] = [clue,answerList[1]]
+
+#            FINISH THIS, MUST USE COUNT ADJACENT (CHANGE TO RETURN TEMP ARRAYS)
+#            WILL TAKE ARRAY AND ADD TO WHAT TO PUT IN BLUESCLUES
+        print("blues clues in kb")
+        print(self.bluesclues)
+        #you have now revealed this square
+        self.revealed[x][y] = 1
+        #neighbors who the clue applies to
+        #bluesclues is the dictionary of all clauses, with key being coordinate of clue
+        # and values in bluesclues is a set of all the unvisited neighbors
+        self.bluesclues = {}
+
+
 
     def passConds(assignments,allVarsList,cluesItem):
         counter = 0
@@ -104,42 +142,7 @@ class AdvancedAgent:
 
 
 
-    def update_kb(self, x, y, clue):
-        print("clue")
-        print(clue)
-        if (clue == "mine"):
-            # Hit a mine
 
-            for i in range(x - 1, x + 2):
-                if (i < 0) or (i >= self.d):
-                    continue
-                for j in range(y - 1, y + 2):
-                    if (j < 0) or (j >= self.d):
-                        continue
-                    if (i == x) and (j == y):
-                        continue
-
-                    if(((i,j)) in bluesclues[((x,y))][1]):
-                        if len(self.bluesclues[((x,y))]) == 0:
-                            del self.bluesclues[((x,y))]
-                        self.bluesclues[((x,y))][0]-=1
-
-        else:
-            self.is_mine[x][y] = 0
-            self.revealed[x][y] = 1
-            answerList = self.count_adjacent(x,y)
-            self.bluesclues[((x,y))] = [clue,answerList[1]]
-            print("blues clues")
-            print(self.bluesclues)
-#            FINISH THIS, MUST USE COUNT ADJACENT (CHANGE TO RETURN TEMP ARRAYS)
-#            WILL TAKE ARRAY AND ADD TO WHAT TO PUT IN BLUESCLUES
-
-        #you have now revealed this square
-        self.revealed[x][y] = 1
-        #neighbors who the clue applies to
-        #bluesclues is the dictionary of all clauses, with key being coordinate of clue
-        # and values in bluesclues is a set of all the unvisited neighbors
-        self.bluesclues = {}
         #for every set of coordinates in the hidden neighbors of this clue
 
 
