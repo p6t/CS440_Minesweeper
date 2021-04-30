@@ -36,7 +36,7 @@ class BasicAgent:
                         counter += 1
 
         # No safe options left
-        return -1
+        return (-1, -1)
 
     def update_kb(self, x, y, clue):
 

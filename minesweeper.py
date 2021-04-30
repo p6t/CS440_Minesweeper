@@ -32,6 +32,9 @@ def play_minesweeper(board, total_mines, agent):
         #query next square to select to choose as a square to open up
         #this means we don't believe that square is a mine
         (x,y) = agent.query_next()
+        if (x, y) == -1:
+            #printf("No safe squares remaining")
+            break
         print("x,y")
         print((x,y))
         #if the square is a mine, we update our list of mine knowledge
