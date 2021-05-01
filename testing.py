@@ -12,9 +12,6 @@ dim = 10
 n_mines = 30
 test_board = minesweeper.generate_board(dim, n_mines)
 test_basic_agent = basic_agent.BasicAgent(dim, n_mines)
-test_advanced_agent = advanced_agent.AdvancedAgent(dim, n_mines)
-
-score = minesweeper.play_minesweeper(test_board, n_mines, test_advanced_agent)
 
 #print(10 * test_board + test_basic_agent.is_mine)
 #print(score)
@@ -66,8 +63,8 @@ if (advanced_enabled):
 
             # COMMENT THIS BACK IN WHEN YOU GET ADVANCED AGENT TO COMPILE
 
-            #agent = advanced_agent.AdvancedAgent(dim, n_mines)
-            scores[i] += minesweeper.play_minesweeper(board, n_mines, test_advanced_agent)
+            agent = advanced_agent.AdvancedAgent(dim, n_mines)
+            scores[i] += minesweeper.play_minesweeper(board, n_mines, agent)
         scores[i] /= n_tests
 
     # Terminal output

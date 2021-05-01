@@ -35,16 +35,15 @@ def play_minesweeper(board, total_mines, agent):
         if (x, y) == -1:
             #printf("No safe squares remaining")
             break
-        print("x,y")
-        print((x,y))
         #if the square is a mine, we update our list of mine knowledge
         if board[x][y] == 1:
             #print("HIT A MINE AT: x = {}, y = {}".format(x, y))
             agent.update_kb(x, y, "mine")
+        else:
+            agent.update_kb(x, y, get_clue(board, x, y))
         #if we are correct, and it is not a mine
         #we will update the knowledge base to say how many mines are contained in this square
-        agent.update_kb(x, y, get_clue(board, x, y))
-        print("not mine")
+        
 
     return agent.get_score()
 
