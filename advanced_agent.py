@@ -23,7 +23,7 @@ class AdvancedAgent:
     def query_next(self):
         if self.firstmove == True:
             self.firstmove = False
-            return ((1,1))
+            return (1,1)
         #value to initially assign
         allCondsSatisfied = False
         # all vars List contains every coordinate of a hidden square, from a clause, in a list
@@ -114,9 +114,9 @@ class AdvancedAgent:
                     if (i,j) in self.bluesclues and self.revealed[i][j] == 1:
                         if((i,j) in self.bluesclues[(i,j)][1]):
                             if self.bluesclues[(i,j)][0] > 0:
-                                self.bluesclues[((i,j))][0]-=1
-                            if len(self.bluesclues[((i,j))][1]) == 0 :
-                                del self.bluesclues[((i,j))]                     
+                                self.bluesclues[(i,j)][0]-=1
+                            if len(self.bluesclues[(i,j)][1]) == 0 :
+                                del self.bluesclues[(i,j)]                     
 
         else:
             self.score+=1
